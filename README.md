@@ -1,4 +1,5 @@
-java_mysql_assignment
+Assignment
+----
 
 The goal is to write a parser in Java that parses web server access log file, loads the log to MySQL and checks if a given IP makes more than a certain number of requests for the given duration. 
 
@@ -21,6 +22,7 @@ Java
 	
 	
 (3) This is how the tool works:
+
     java -cp "parser.jar" com.ef.Parser --startDate=2017-01-01.13:00:00 --duration=hourly --threshold=100
 	
 		The tool will find any IPs that made more than 100 requests starting from 2017-01-01.13:00:00 to 2017-01-01.14:00:00 (one hour)
