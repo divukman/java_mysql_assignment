@@ -46,3 +46,10 @@ SQL
     Ex: Write SQL to find IPs that made more than 100 requests starting from 2017-01-01.13:00:00 to 2017-01-01.14:00:00.
 
 (2) Write MySQL query to find requests made by a given IP.
+
+
+Use case:
+----
+
+(1) In root folder, run 'mvnw install'
+(2) Copy access.log file to target directory and run from there.

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
  * JPA - DB converter. Check out the:
  * https://www.thoughts-on-java.org/persist-localdate-localdatetime-jpa/
  */
+// @todo: check out if Joda time with Java 9 can replace any of this
 @Converter(autoApply = true)
 public class LocalDateTimeAttributeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
 

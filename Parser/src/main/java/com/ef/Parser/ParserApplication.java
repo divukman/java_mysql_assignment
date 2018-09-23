@@ -2,11 +2,12 @@ package com.ef.Parser;
 
 
 import com.ef.Parser.exceptions.ArgumentException;
+import com.ef.Parser.repositories.AccessLogsRepository;
 import com.ef.Parser.util.Arguments;
 import com.ef.Parser.util.ArgumentsValidator;
+import com.ef.Parser.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.cli.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,6 +17,9 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @Slf4j
 public class ParserApplication {
+
+    @Autowired
+    AccessLogsRepository accessLogsRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ParserApplication.class, args);
@@ -48,6 +52,9 @@ public class ParserApplication {
             if (arguments == null) {
                 return;
             }
+
+            // For now, just save everything to the database...
+            FileUtil.readLogsFileToDB(arguments.getLogfile(), accessLogsRepository);
 
         };
 	}

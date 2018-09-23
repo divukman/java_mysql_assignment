@@ -1,7 +1,6 @@
 package com.ef.Parser.entities;
 
 import com.ef.Parser.converters.LocalDateTimeAttributeConverter;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,6 +17,8 @@ public class AccessLog {
     String ip;
 
     String method;
+
+    Integer statusCode;
 
     String client;
 
@@ -57,6 +58,14 @@ public class AccessLog {
         this.method = method;
     }
 
+    public Integer getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(Integer statusCode) {
+        this.statusCode = statusCode;
+    }
+
     public String getClient() {
         return client;
     }
@@ -72,6 +81,7 @@ public class AccessLog {
                 ", timestamp=" + timestamp +
                 ", ip='" + ip + '\'' +
                 ", method='" + method + '\'' +
+                ", statusCode='" + statusCode + '\'' +
                 ", client='" + client + '\'' +
                 '}';
     }
