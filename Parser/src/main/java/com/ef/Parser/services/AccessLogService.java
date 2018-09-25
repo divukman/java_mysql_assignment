@@ -33,6 +33,11 @@ public class AccessLogService {
     private String PASSWORD;
 
 
+    /**
+     * @deprecated Slow performance. Could not get it working as fast as prepared statements.
+     * Saves logs to the DB, batch of 500 at a time.
+     * @param logs
+     */
     public void saveLogs(final List<AccessLog> logs) {
         final int size = logs.size();
         int counter = 0;
@@ -51,6 +56,10 @@ public class AccessLogService {
         }
     }
 
+    /**
+     * Saves the logs to the DB using JDBC connection and prepared statements.
+     * @param logs
+     */
     public void saveLogsBatch(final List<AccessLog> logs) {
         Connection con = null;
         PreparedStatement ps = null;
