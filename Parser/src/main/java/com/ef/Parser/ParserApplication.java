@@ -53,9 +53,13 @@ public class ParserApplication {
                 return;
             }
 
-            // For now, just save everything to the database...
-            FileUtil.readLogsFileToDB(arguments.getLogfile(), accessLogsRepository);
+            // If log file was specified, load data to the database
+            if (arguments.getLogfile() != null) {
+                FileUtil.readLogsFileToDB(arguments.getLogfile(), accessLogsRepository);
+            }
 
+            // Execute a query specified by the command line arguments
+            System.out.println("------------------------ executing query");
         };
 	}
 }

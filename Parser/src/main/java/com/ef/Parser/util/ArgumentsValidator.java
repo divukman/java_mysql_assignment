@@ -19,7 +19,7 @@ public class ArgumentsValidator {
     public static final String ARG_LOG_FILE = "logFile";
     public static final String ARG_START_DATE = "startDate";
     public static final String ARG_DURATION = "duration";
-    public static final String ARG_TRESHOLD = "threshold";
+    public static final String ARG_THRESHOLD = "threshold";
 
     public static final String HOURLY = "hourly";
     public static final String DAILY = "daily";
@@ -33,10 +33,10 @@ public class ArgumentsValidator {
         Arguments result = null;
 
         final Options options = new Options();
-        options.addOption(Option.builder().longOpt(ARG_LOG_FILE).required(true).hasArg(true).build());
-        options.addOption(Option.builder().longOpt(ARG_START_DATE).required(true).hasArg(true).build());
-        options.addOption(Option.builder().longOpt(ARG_DURATION).required(true).hasArg(true).build());
-        options.addOption(Option.builder().longOpt(ARG_TRESHOLD).required(true).hasArg(true).build());
+        options.addOption(Option.builder().longOpt(ARG_LOG_FILE).required(false).hasArg(true).build());
+        options.addOption(Option.builder().longOpt(ARG_START_DATE).required(false).hasArg(true).build());
+        options.addOption(Option.builder().longOpt(ARG_DURATION).required(false).hasArg(true).build());
+        options.addOption(Option.builder().longOpt(ARG_THRESHOLD).required(false).hasArg(true).build());
 
 
         final CommandLineParser commandLineParser = new DefaultParser();
@@ -53,14 +53,22 @@ public class ArgumentsValidator {
         final String logFile = commandLine.getOptionValue(ARG_LOG_FILE);
         final String startDate =  commandLine.getOptionValue(ARG_START_DATE);
         final String duration = commandLine.getOptionValue(ARG_DURATION);
-        final String threshold = commandLine.getOptionValue(ARG_TRESHOLD);
+        final String threshold = commandLine.getOptionValue(ARG_THRESHOLD);
+
+        if ( !( (logFile != null) || (startDate != null && duration != null && threshold != null)) ) {
+            final String msg = "Incorrect argument list: logFile=" + logFile + " startDate="+startDate + " duration=" + duration + " threshold="+threshold;
+            log.info("---------------------------------------------------------");
+            log.error(msg);
+            log.info("---------------------------------------------------------");
+            throw new ArgumentException(msg);
+        }
 
         log.info("arguments parsed: ");
         log.info("---------------------------------------------------------");
         log.info(ARG_LOG_FILE + ": " + logFile);
         log.info(ARG_START_DATE + ": " + startDate);
         log.info(ARG_DURATION + ": " + duration);
-        log.info(ARG_TRESHOLD + ": " + threshold);
+        log.info(ARG_THRESHOLD + ": " + threshold);
         log.info("---------------------------------------------------------");
 
         result = new Arguments();
