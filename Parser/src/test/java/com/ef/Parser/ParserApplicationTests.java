@@ -34,7 +34,7 @@ public class ParserApplicationTests {
 		assert (arguments.getDuration().equalsIgnoreCase(ArgumentsValidator.HOURLY));
 		assert(arguments.getLogfile().equalsIgnoreCase("access.txt"));
 		assert(arguments.getStartDate().equals(DateUtil.validateArgumentDate("2017-01-01.00:00:11")));
-		assert(arguments.getThreshold() == 100);
+		assert(arguments.getThreshold() == 100L);
 	}
 
 	@Test

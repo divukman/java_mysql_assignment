@@ -23,6 +23,8 @@ public class ArgumentsValidator {
 
     public static final String HOURLY = "hourly";
     public static final String DAILY = "daily";
+    public static final Long HOURLY_LIMIT_DEFAULT = 200L;
+    public static final Long DAILY_LIMIT_DEFAULT = 500L;
 
     /**
      * Validates the passed arguments and returns a holder object.
@@ -74,7 +76,7 @@ public class ArgumentsValidator {
         result = new Arguments();
         result.setStartDate(DateUtil.validateArgumentDate(startDate));
         result.setDuration(ArgumentsValidator.validateDuration(duration));
-        result.setThreshold(ArgumentsValidator.validateThreshold(threshold));
+        result.setThreshold(ArgumentsValidator.validateThreshold(duration, threshold));
         result.setLogfile(logFile);
 
         return result;
@@ -96,15 +98,20 @@ public class ArgumentsValidator {
 
     /**
      * Validates the threshold argument. Must be an integer number.
+     * @param strDuration
      * @param strThreshold
      * @return Integer value.
      * @throws ArgumentException if argument is not an integer number
      */
-    public static Integer validateThreshold(final String strThreshold) {
-       Integer result = null;
+    public static Long validateThreshold(final String strDuration, final String strThreshold) {
+       Long result = null;
 
        try {
-           result = Integer.valueOf(strThreshold);
+           if (strThreshold == null) {
+               result = strDuration.equalsIgnoreCase(HOURLY) ? HOURLY_LIMIT_DEFAULT : DAILY_LIMIT_DEFAULT;
+           } else {
+            result = Long.valueOf(strThreshold);
+           }
         } catch(Exception e) {
             throw new ArgumentException("threshold should be a number. " +  e.getMessage());
         }

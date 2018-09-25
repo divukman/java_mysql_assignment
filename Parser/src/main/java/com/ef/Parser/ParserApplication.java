@@ -13,6 +13,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
+
 
 @SpringBootApplication
 @Slf4j
@@ -41,16 +43,12 @@ public class ParserApplication {
             }
 
             // Parse the arguments
-            Arguments arguments = null;
+            Arguments arguments;
             try {
                 arguments = ArgumentsValidator.validate(args);
             } catch(ArgumentException e) {
                 log.error("Missing required arguments" + e.getMessage());
-            }
-
-            //@todo: refactor
-            if (arguments == null) {
-                return;
+                return; //@todo: refactor
             }
 
             // If log file was specified, load data to the database
@@ -59,7 +57,18 @@ public class ParserApplication {
             }
 
             // Execute a query specified by the command line arguments
-            System.out.println("------------------------ executing query");
+            System.out.println("------------------------ executing query -------------------------------");
+            List<String> lstIps = accessLogsRepository.findByCustomQuery(arguments.getStartDate(),
+                    arguments.getDuration().equalsIgnoreCase(ArgumentsValidator.HOURLY) ? arguments.getStartDate().plusHours(1) : arguments.getStartDate().plusDays(1),
+                    arguments.getThreshold());
+
+            lstIps.stream().forEach(s-> {
+                // Log
+                final String msg = "IP: " + s + " banned for making >= " + arguments.getThreshold() + " requests, from: " + arguments.getStartDate() + " in specified duration: " + arguments.getDuration();
+                log.info(msg);
+
+                // Save to DB
+            });
         };
 	}
 }

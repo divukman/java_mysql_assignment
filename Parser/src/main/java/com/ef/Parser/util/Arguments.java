@@ -6,7 +6,7 @@ public class Arguments {
     String logfile;
     LocalDateTime startDate;
     String duration;
-    Integer threshold;
+    Long threshold;
 
     public String getLogfile() {
         return logfile;
@@ -32,11 +32,11 @@ public class Arguments {
         this.duration = duration;
     }
 
-    public Integer getThreshold() {
+    public Long getThreshold() {
         return threshold;
     }
 
-    public void setThreshold(Integer threshold) {
+    public void setThreshold(Long threshold) {
         this.threshold = threshold;
     }
 
