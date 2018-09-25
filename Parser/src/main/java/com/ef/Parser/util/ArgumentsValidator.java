@@ -74,9 +74,9 @@ public class ArgumentsValidator {
         log.info("---------------------------------------------------------");
 
         result = new Arguments();
-        result.setStartDate(DateUtil.validateArgumentDate(startDate));
-        result.setDuration(ArgumentsValidator.validateDuration(duration));
-        result.setThreshold(ArgumentsValidator.validateThreshold(duration, threshold));
+        result.setStartDate(startDate!= null ? DateUtil.validateArgumentDate(startDate) : null);
+        result.setDuration(duration != null ? ArgumentsValidator.validateDuration(duration) : null);
+        result.setThreshold(threshold != null ? ArgumentsValidator.validateThreshold(duration, threshold) : null);
         result.setLogfile(logFile);
 
         return result;

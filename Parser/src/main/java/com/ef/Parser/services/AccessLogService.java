@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -87,7 +88,8 @@ public class AccessLogService {
 
             System.out.println("Time Taken="+(System.currentTimeMillis()-start));
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
+           log.error("Error executing prepared statements: " + e.getMessage());
             e.printStackTrace();
         }finally{
             try {
