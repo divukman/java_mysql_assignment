@@ -2,9 +2,10 @@ package com.ef.Parser.services;
 
 import com.ef.Parser.entities.AccessLog;
 import com.ef.Parser.repositories.AccessLogsRepository;
+import com.ef.Parser.util.DBUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,6 +22,15 @@ public class AccessLogService {
 
     @Autowired
     AccessLogsRepository accessLogsRepository;
+
+    @Value("${spring.datasource.url}")
+    private String URL;
+
+    @Value("${spring.datasource.username}")
+    private String USERNAME;
+
+    @Value("${spring.datasource.password}")
+    private String PASSWORD;
 
 
     public void saveLogs(final List<AccessLog> logs) {
@@ -46,10 +56,10 @@ public class AccessLogService {
         PreparedStatement ps = null;
         String query = "insert into access_log (id, timestamp, ip, method, status_code, client) values (?,?,?,?,?,?)";
         try {
-            con = DBConnection.getConnection();
+            con = DBUtil.getConnection(URL, USERNAME, PASSWORD);
             ps = con.prepareStatement(query);
 
-            long start = System.currentTimeMillis();
+            final long start = System.currentTimeMillis();
             for(int i =0; i<logs.size();i++){
                 final AccessLog log = logs.get(i);
 
