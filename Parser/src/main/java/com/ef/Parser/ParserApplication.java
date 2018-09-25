@@ -3,6 +3,7 @@ package com.ef.Parser;
 
 import com.ef.Parser.exceptions.ArgumentException;
 import com.ef.Parser.repositories.AccessLogsRepository;
+import com.ef.Parser.services.AccessLogService;
 import com.ef.Parser.util.Arguments;
 import com.ef.Parser.util.ArgumentsValidator;
 import com.ef.Parser.util.FileUtil;
@@ -21,7 +22,7 @@ import java.util.List;
 public class ParserApplication {
 
     @Autowired
-    AccessLogsRepository accessLogsRepository;
+    AccessLogService accessLogService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ParserApplication.class, args);
@@ -53,12 +54,12 @@ public class ParserApplication {
 
             // If log file was specified, load data to the database
             if (arguments.getLogfile() != null) {
-                FileUtil.readLogsFileToDB(arguments.getLogfile(), accessLogsRepository);
+                FileUtil.readLogsFileToDB(arguments.getLogfile(), accessLogService);
             }
 
             // Execute a query specified by the command line arguments
             System.out.println("------------------------ executing query -------------------------------");
-            List<String> lstIps = accessLogsRepository.findByCustomQuery(arguments.getStartDate(),
+            List<String> lstIps = accessLogService.findByCustomQuery(arguments.getStartDate(),
                     arguments.getDuration().equalsIgnoreCase(ArgumentsValidator.HOURLY) ? arguments.getStartDate().plusHours(1) : arguments.getStartDate().plusDays(1),
                     arguments.getThreshold());
 

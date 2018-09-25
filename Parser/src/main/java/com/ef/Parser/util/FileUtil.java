@@ -2,6 +2,7 @@ package com.ef.Parser.util;
 
 import com.ef.Parser.entities.AccessLog;
 import com.ef.Parser.repositories.AccessLogsRepository;
+import com.ef.Parser.services.AccessLogService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -20,7 +21,7 @@ public class FileUtil {
      * Reads the logs file and stores the data to the access logs database table.
      * @param fileName logs file name
      */
-    public static void readLogsFileToDB(final String fileName, final AccessLogsRepository accessLogsRepository) throws IOException {
+    public static void readLogsFileToDB(final String fileName, final AccessLogService accessLogService) throws IOException {
         final File file = new File(fileName);
 
         // Check out if file exists
@@ -30,6 +31,8 @@ public class FileUtil {
 
         List<AccessLog> lstLogs = new ArrayList<>();
 
+        final long startts = System.currentTimeMillis();
+        log.info("Opening file stream: " + startts);
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
             stream.forEach(line -> {
                 System.out.println(line);
@@ -55,8 +58,11 @@ public class FileUtil {
             throw new IOException(msg + e.getMessage());
         }
 
+        log.info("Loading from file to memory took: " + (System.currentTimeMillis() - startts));
+
         log.info("Saving the logs to the database...");
-       accessLogsRepository.saveAll(lstLogs);
+        accessLogService.saveLogsBatch(lstLogs);
+        log.info("Saving the logs to the database took: " + (System.currentTimeMillis() - startts));
     }
 
     public static void main(String args[]) {

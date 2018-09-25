@@ -1,6 +1,7 @@
 package com.ef.Parser.entities;
 
 import com.ef.Parser.converters.LocalDateTimeAttributeConverter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,7 +9,8 @@ import java.time.LocalDateTime;
 @Entity
 public class AccessLog {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GenericGenerator(name = "generic", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
     long id;
 
     @Convert(converter = LocalDateTimeAttributeConverter.class)
