@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -73,7 +72,7 @@ public class AccessLogService {
             for(int i =0; i<logs.size();i++){
                 final AccessLog log = logs.get(i);
 
-                ps.setInt(1, i);
+                ps.setInt(1, i+1);
                 ps.setTimestamp(2, Timestamp.valueOf(log.getTimestamp()));
                 ps.setString(3, log.getIp());
                 ps.setString(4, log.getMethod());
@@ -86,7 +85,7 @@ public class AccessLogService {
             }
             ps.executeBatch();
 
-            System.out.println("Time Taken="+(System.currentTimeMillis()-start));
+            log.info("Time Taken="+(System.currentTimeMillis()-start));
 
         } catch (SQLException e) {
            log.error("Error executing prepared statements: " + e.getMessage());
@@ -101,11 +100,23 @@ public class AccessLogService {
         }
     }
 
+    /**
+     * Finds entries based on custom query logic.
+     * @param startts
+     * @param endts
+     * @param threshold
+     * @return list of IP addresses
+     */
     @Transactional
     public List<String> findByCustomQuery(final LocalDateTime startts, final LocalDateTime endts, final  Long threshold) {
         return accessLogsRepository.findByCustomQuery(startts, endts, threshold);
     }
 
-
+    /**
+     * Truncates the table.
+     */
+    public void truncate() {
+        accessLogsRepository.truncate();
+    }
 
 }

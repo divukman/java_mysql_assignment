@@ -1,6 +1,7 @@
 package com.ef.Parser;
 
 
+import com.ef.Parser.entities.AccessLog;
 import com.ef.Parser.entities.BlackList;
 import com.ef.Parser.exceptions.ArgumentException;
 import com.ef.Parser.repositories.AccessLogsRepository;
@@ -60,30 +61,46 @@ public class ParserApplication {
 
             // If log file was specified, load data to the database
             if (arguments.getLogfile() != null) {
-                FileUtil.readLogsFileToDB(arguments.getLogfile(), accessLogService);
+                System.out.print("Reading in the logs file...");
+                List<AccessLog> lstLogs = FileUtil.readLogsFile(arguments.getLogfile());
+                log.info("Truncating old table entries...");
+                accessLogService.truncate();
+                blackListService.truncate();
+
+                final long startts = System.currentTimeMillis();
+                log.info("Saving the logs to the database...");
+                accessLogService.saveLogsBatch(lstLogs);
+                log.info("Saving the logs to the database took: " + (System.currentTimeMillis() - startts));
+                System.out.println(" done (" + (System.currentTimeMillis() - startts) + " ms)");
             }
 
             // Execute a query specified by the command line arguments
-            log.info("------------------------ executing query -------------------------------");
-            List<String> lstIps = accessLogService.findByCustomQuery(arguments.getStartDate(),
-                    arguments.getDuration().equalsIgnoreCase(ArgumentsValidator.HOURLY) ? arguments.getStartDate().plusHours(1) : arguments.getStartDate().plusDays(1),
-                    arguments.getThreshold());
+            System.out.println("------------------------ Banned clients -------------------------------");
+            if (arguments.getDuration() != null && arguments.getStartDate() != null) {
+                List<String> lstIps = accessLogService.findByCustomQuery(arguments.getStartDate(),
+                        arguments.getDuration().equalsIgnoreCase(ArgumentsValidator.HOURLY) ? arguments.getStartDate().plusHours(1) : arguments.getStartDate().plusDays(1),
+                        arguments.getThreshold());
 
-            ArrayList<BlackList> lstBlackList = new ArrayList<>();
+                ArrayList<BlackList> lstBlackList = new ArrayList<>();
 
-            lstIps.stream().forEach(s-> {
-                // Log
-                final String msg = "IP: " + s + " banned for making >= " + arguments.getThreshold() + " requests, from: " + arguments.getStartDate() + " in specified duration: " + arguments.getDuration();
-                log.info(msg);
+                lstIps.stream().forEach(s-> {
+                    // Log
+                    final String msg = "IP: " + s + " banned for making >= " + arguments.getThreshold() + " requests, from: " + arguments.getStartDate() + " in specified duration: " + arguments.getDuration();
+                    System.out.println(msg);
 
-               BlackList blackListItem = new BlackList();
-               blackListItem.setIp(s);
-               blackListItem.setReason(msg);
-               lstBlackList.add(blackListItem);
-            });
+                    BlackList blackListItem = new BlackList();
+                    blackListItem.setIp(s);
+                    blackListItem.setReason(msg);
+                    lstBlackList.add(blackListItem);
+                });
 
-            blackListService.saveBlacklist(lstBlackList);
-            log.info("------------------------ done -------------------------------");
+                blackListService.saveBlacklist(lstBlackList);
+            }
+            System.out.println("------------------------ done -------------------------------");
+
+
+            //@TODO:
+            // 1. blacklist: check for duplicate entries?
         };
 	}
 }

@@ -24,4 +24,11 @@ public class BlackListService {
     public void saveBlacklist(final List<BlackList> blackList) {
         blacklistRepository.saveAll(blackList);
     }
+
+    /**
+     * Truncates the table.
+     */
+    public void truncate() {
+        blacklistRepository.truncate();
+    }
 }

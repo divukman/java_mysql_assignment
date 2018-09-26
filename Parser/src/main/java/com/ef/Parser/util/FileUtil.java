@@ -18,10 +18,11 @@ import java.util.stream.Stream;
 public class FileUtil {
 
     /**
-     * Reads the logs file and stores the data to the access logs database table.
+     * Reads the logs file.
      * @param fileName logs file name
+     * @return list of access logs
      */
-    public static void readLogsFileToDB(final String fileName, final AccessLogService accessLogService) throws IOException {
+    public static List<AccessLog> readLogsFile(final String fileName) throws IOException {
         final File file = new File(fileName);
 
         // Check out if file exists
@@ -35,7 +36,7 @@ public class FileUtil {
         log.info("Opening file stream: " + startts);
         try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
             stream.forEach(line -> {
-                System.out.println(line);
+                log.info(line);
 
 
                 String [] tokens = line.split("\\|");
@@ -59,10 +60,7 @@ public class FileUtil {
         }
 
         log.info("Loading from file to memory took: " + (System.currentTimeMillis() - startts));
-
-        log.info("Saving the logs to the database...");
-        accessLogService.saveLogsBatch(lstLogs);
-        log.info("Saving the logs to the database took: " + (System.currentTimeMillis() - startts));
+        return lstLogs;
     }
 
     public static void main(String args[]) {
