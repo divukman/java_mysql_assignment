@@ -21,7 +21,7 @@ create table access_log (
 # Find IPs that mode more than a certain number of requests for a given time period
 select LOGLINE.ip from access_log as LOGLINE
 where LOGLINE.timestamp between '2017-01-01 13:00:00' and '2017-01-01 14:00:00'
-group by LOGLINE.ip having count(LOGLINE.ip) >= 100
+group by LOGLINE.ip having count(LOGLINE.ip) >= 100;
 
 
 # Find requests made by a given IP
