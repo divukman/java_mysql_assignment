@@ -14,16 +14,7 @@ public class DateUtil {
      * @throws ArgumentException
      */
     public static LocalDateTime validateLogDate(final String strDate) {
-        LocalDateTime result = null;
-
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");//2017-01-01 00:00:11.763
-        try {
-            result = LocalDateTime.parse(strDate, formatter);
-        } catch (Exception e) {
-            throw new ArgumentException("date string format yyyy-MM-dd HH:mm:ss.SSS");
-        }
-
-        return result;
+        return DateUtil.validateDate(strDate, "yyyy-MM-dd HH:mm:ss.SSS");
     }
 
     /**
@@ -33,15 +24,28 @@ public class DateUtil {
      * @throws ArgumentException
      */
     public static LocalDateTime validateArgumentDate(final String strDate) {
+       return DateUtil.validateDate(strDate, "yyyy-MM-dd.HH:mm:ss");
+    }
+
+    /**
+     * Parses the date string timestamps.
+     * @param strDate date string
+     * @param dateFormat date format string
+     * @return localized date object
+     * @throws ArgumentException
+     */
+    public static LocalDateTime validateDate(final String strDate, final String dateFormat) {
         LocalDateTime result = null;
 
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd.HH:mm:ss");//2017-01-01.00:00:11
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
         try {
             result = LocalDateTime.parse(strDate, formatter);
         } catch (Exception e) {
-            throw new ArgumentException("date string format yyyy-MM-dd.HH:mm:ss");
+            throw new ArgumentException("date string format " + dateFormat);
         }
 
         return result;
     }
+
+
 }
